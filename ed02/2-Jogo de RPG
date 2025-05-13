@@ -1,0 +1,101 @@
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("=== JOGO DE RPG ===");
+        Guerreiro g = new Guerreiro("Thorgal");
+        Mago m = new Mago("Merlino");
+        Arqueiro a = new Arqueiro("Legolis");
+
+        g.status();
+        m.status();
+        a.status();
+
+        g.atacar(m);
+        m.usarHabilidadeEspecial();
+        a.usarHabilidadeEspecial();
+
+        g.status();
+        m.status();
+        a.status();
+    }
+}
+
+abstract class Personagem {
+    protected String nome;
+    protected int hp;
+    protected int ataqueBase;
+
+    public Personagem(String nome, int hp, int ataqueBase) {
+        this.nome = nome;
+        this.hp = hp;
+        this.ataqueBase = ataqueBase;
+    }
+
+    public void atacar(Personagem inimigo) {
+        inimigo.defender(ataqueBase);
+        System.out.println(nome + " atacou " + inimigo.nome + " com " + ataqueBase + " de dano.");
+    }
+
+    public abstract void defender(int dano);
+    public abstract void usarHabilidadeEspecial();
+
+    public void status() {
+        System.out.println(nome + " | HP: " + hp);
+    }
+}
+
+class Guerreiro extends Personagem {
+    public Guerreiro(String nome) {
+        super(nome, 150, 25);
+    }
+
+    @Override
+    public void defender(int dano) {
+        int danoRecebido = dano / 2;
+        hp -= danoRecebido;
+        System.out.println(nome + " defendeu e recebeu " + danoRecebido + " de dano.");
+    }
+
+    @Override
+    public void usarHabilidadeEspecial() {
+        System.out.println(nome + " usou Golpe Duplo!");
+        System.out.println(nome + " causou " + (ataqueBase * 2) + " de dano no inimigo!");
+    }
+}
+
+class Mago extends Personagem {
+    public Mago(String nome) {
+        super(nome, 100, 30);
+    }
+
+    @Override
+    public void defender(int dano) {
+        hp -= dano;
+        System.out.println(nome + " recebeu " + dano + " de dano.");
+    }
+
+    @Override
+    public void usarHabilidadeEspecial() {
+        System.out.println(nome + " lançou Bola de Fogo!");
+        System.out.println("Dano mágico em área!");
+    }
+}
+
+class Arqueiro extends Personagem {
+    public Arqueiro(String nome) {
+        super(nome, 120, 20);
+    }
+
+    @Override
+    public void defender(int dano) {
+        hp -= dano;
+        System.out.println(nome + " recebeu " + dano + " de dano.");
+    }
+
+    @Override
+    public void usarHabilidadeEspecial() {
+        System.out.println(nome + " usou Chuva de Flechas!");
+        for (int i = 0; i < 3; i++) {
+            System.out.println("Flecha " + (i + 1) + " disparada!");
+        }
+    }
+}
