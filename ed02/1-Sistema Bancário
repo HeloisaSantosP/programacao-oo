@@ -1,0 +1,109 @@
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("=== SISTEMA BANCÁRIO ===");
+        ContaCorrente cc = new ContaCorrente("Alice", 1000);
+        ContaPoupanca cp = new ContaPoupanca("Bob", 1500);
+        ContaSalario cs = new ContaSalario("Carlos", 1200);
+
+        cc.depositar(200);
+        cp.sacar(100);
+        cs.transferir(cc, 300);
+
+        cc.aplicarJurosDiarios();
+        cp.aplicarJurosDiarios();
+        cs.aplicarJurosDiarios();
+
+        cc.imprimirExtrato();
+        cp.imprimirExtrato();
+        cs.imprimirExtrato();
+    }
+}
+
+class Conta {
+    protected String cliente;
+    protected double saldo;
+
+    public Conta(String cliente, double saldo) {
+        this.cliente = cliente;
+        this.saldo = saldo;
+    }
+
+    public void depositar(double valor) {
+        saldo += valor;
+    }
+
+    public void sacar(double valor) {
+        if (saldo >= valor) {
+            saldo -= valor;
+        } else {
+            System.out.println("Saldo insuficiente.");
+        }
+    }
+
+    public void transferir(Conta destino, double valor) {
+        if (saldo >= valor) {
+            saldo -= valor;
+            destino.depositar(valor);
+        } else {
+            System.out.println("Transferência não realizada: saldo insuficiente.");
+        }
+    }
+
+    public double getSaldo() {
+        return saldo;
+    }
+
+    public void aplicarJurosDiarios() {}
+
+    public void imprimirExtrato() {
+        System.out.println("Extrato genérico.");
+    }
+}
+
+class ContaCorrente extends Conta {
+    public ContaCorrente(String cliente, double saldo) {
+        super(cliente, saldo);
+    }
+
+    @Override
+    public void aplicarJurosDiarios() {
+        saldo *= 1.001;
+    }
+
+    @Override
+    public void imprimirExtrato() {
+        System.out.println("Extrato - Conta Corrente de " + cliente + ": R$" + String.format("%.2f", saldo));
+    }
+}
+
+class ContaPoupanca extends Conta {
+    public ContaPoupanca(String cliente, double saldo) {
+        super(cliente, saldo);
+    }
+
+    @Override
+    public void aplicarJurosDiarios() {
+        saldo *= 1.0008;
+    }
+
+    @Override
+    public void imprimirExtrato() {
+        System.out.println("Extrato - Conta Poupança de " + cliente + ": R$" + String.format("%.2f", saldo));
+    }
+}
+
+class ContaSalario extends Conta {
+    public ContaSalario(String cliente, double saldo) {
+        super(cliente, saldo);
+    }
+
+    @Override
+    public void aplicarJurosDiarios() {
+        // Sem juros
+    }
+
+    @Override
+    public void imprimirExtrato() {
+        System.out.println("Extrato - Conta Salário de " + cliente + ": R$" + String.format("%.2f", saldo));
+    }
+}
